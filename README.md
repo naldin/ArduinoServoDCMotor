@@ -1,2 +1,2 @@
 # ArduinoServoDCMotor
-An Arduino servo motor with DC motor and potentiometer
+An Arduino servo motor with DC motor and potentiometer.
