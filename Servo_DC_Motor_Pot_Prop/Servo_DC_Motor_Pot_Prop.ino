@@ -1,5 +1,5 @@
 /*
-    Arduino Servo DC Motor
+    Arduino Servo DC Motor v1.0
     PWM proportional
     Ronaldo Rezende Junior
     ronaldo.rrj at gmail
@@ -8,7 +8,7 @@
 */
 
 //variables
-short int valPot = 0;
+short int valRead = 0;
 short int motorPWM = 0;
 short int error = 0; //difference between target value and input value
 
@@ -19,10 +19,10 @@ const short int wireMT_1 = 5; //for wire motor H bridge
 const short int wireMT_2 = 6; //for wire motor H bridge
 const short int potMT = A0; //motor potentiometer
 const short int potIn = A3; //input potentiometer
-const short int diff_error = 20; //max error to potentiometer motor
+const short int diff_error = 10; //max error to potentiometer motor
 const short int minPot = 10;  //minimal input value
 const short int maxPot = 1010; //max input value
-const short int maxValIn = 999; //max *potentiometer value
+const short int maxValIn = 1023; //max *input value. For this case 1023, the max of pot.
 // *here can use something like degress, where max could be 180
 
 //setup
@@ -33,16 +33,15 @@ void setup() {
   pinMode (potIn, INPUT); //input potentiometer
   digitalWrite (wireMT_1, LOW);
   digitalWrite (wireMT_2, LOW);
-  valPot = analogRead(potMT);
 }
 
 //run motor function
-void runMotor(short int valIn) {
+void runMotor(short int valTarget) {
   //proportionality between input and output value
-  while (valPot <= valIn && abs(valPot - valIn) >  diff_error) {
-    valPot = (((float)analogRead(potMT) - minPot) / (maxPot - minPot)) * maxValIn;
+  while (valRead <= valTarget && abs(valRead - valTarget) >  diff_error) {
+    valRead = (((float)analogRead(potMT) - minPot) / (maxPot - minPot)) * maxValIn;
     //pwm proportional
-    error = valIn - valPot;
+    error = valTarget - valRead;
     motorPWM = ((kp * error) / 100) + mp;
     //run motor
     analogWrite (wireMT_1, motorPWM);
@@ -51,10 +50,10 @@ void runMotor(short int valIn) {
   analogWrite (wireMT_1, 0); //turn off motor
   
   //proportionality between input and output value
-  while (valPot >= valIn && abs(valPot - valIn) >  diff_error) {
-    valPot = (((float)analogRead(potMT) - minPot) / (maxPot - minPot)) * maxValIn;
+  while (valRead >= valTarget && abs(valRead - valTarget) >  diff_error) {
+    valRead = (((float)analogRead(potMT) - minPot) / (maxPot - minPot)) * maxValIn;
     //pwm proportional
-    error = valPot - valIn;
+    error = valRead - valTarget;
     motorPWM = ((kp * error) / 100) + mp;
     //run motor
     analogWrite (wireMT_2, motorPWM);
