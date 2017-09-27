@@ -5,6 +5,14 @@
     ronaldo.rrj at gmail
     09/2017
     https://github.com/naldin
+
+    *** Attention ***
+    Beware with correct position of wire motor (pin 5 and 6 of Arduino).
+    If they are changed, the motor will turn to the end travel of pot 
+    and can broke it.
+    Make a test with a low power (motorPWM variable) first.
+    If you want change the direction of motor, use something like 
+    this in Arduino loop: runMotor(1023-val);
 */
 
 //variables
@@ -66,4 +74,5 @@ void runMotor(short int valTarget) {
 void loop() {
   short int val = analogRead(potIn); //read input potentiometer
   runMotor(val); //run motor for target value
+  //runMotor(1023-val); //use for invert direction motor
 }
